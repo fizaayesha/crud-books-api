@@ -3,7 +3,13 @@ import mysql from "mysql";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: [""],
+    methods: ["POST", "GET"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const db = mysql.createConnection({
@@ -56,7 +62,8 @@ app.delete("/books/:id", (req, res) => {
 
 app.put("/books/:id", (req, res) => {
   const bookId = req.params.id;
-  const q = "UPDATE books SET `title`= ?, `desc`= ?, `price`= ?, `cover`= ? WHERE id = ?";
+  const q =
+    "UPDATE books SET `title`= ?, `desc`= ?, `price`= ?, `cover`= ? WHERE id = ?";
 
   const values = [
     req.body.title,
@@ -65,7 +72,7 @@ app.put("/books/:id", (req, res) => {
     req.body.cover,
   ];
 
-  db.query(q, [...values,bookId], (err, data) => {
+  db.query(q, [...values, bookId], (err, data) => {
     if (err) return res.send(err);
     return res.json(data);
   });
